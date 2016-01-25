@@ -49,6 +49,10 @@
     [super viewDidAppear:animated];
     
     [self showFeatures];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self showFeatures];
+    });
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -73,7 +77,7 @@
 {
     /** 使用APP版本作为oneTimeKey,则当前版本下指引图只会显示一次 */
     NSString *oneTimeKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    ZTFeatureMaskView *featureView = [[ZTFeatureMaskView alloc] initWithOneTimeKey:oneTimeKey];
+    ZTFeatureMaskView *featureView = [[ZTFeatureMaskView alloc] initWithOneTimeKey:nil];
     [featureView setMaskedView:[[UIApplication sharedApplication] keyWindow]];
     
     /* 给 button 添加新特性指引 */

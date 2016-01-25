@@ -163,9 +163,8 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
         return;
     }
     
-    if ([self isShowing]) {
-        return;
-    }
+    [self removeShowing];
+    
     self.frame = self.maskedView.bounds;
     [self.maskedView addSubview:self];
 }
@@ -191,14 +190,13 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     }
     return YES;
 }
-- (BOOL)isShowing
+- (void)removeShowing
 {
     for (UIView *subview in self.maskedView.subviews) {
         if ([subview isKindOfClass:[ZTFeatureMaskView class]]) {
-            return  YES;
+            [subview removeFromSuperview];
         }
     }
-    return NO;
 }
 
 #pragma mark - add transparency area
@@ -211,6 +209,11 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
 - (void)addTransparencyInReferenceView:(UIView *)referenceView
 {
     [self addTransparencyInReferenceView:referenceView radius:0.0f];
+}
+
+- (void)addTransparencyInReferenceView:(UIView *)referenceView wider:(CGFloat)wider
+{
+    [self addTransparencyInReferenceView:referenceView wider:wider radius:0.0f];
 }
 
 - (void)addTransparencyInReferenceView:(UIView *)referenceView innerRect:(CGRect)innerRect
@@ -227,6 +230,19 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
 - (void)addTransparencyInReferenceView:(UIView *)referenceView radius:(CGFloat)radius
 {
     [self addTransparencyInReferenceView:referenceView radius:radius innerRect:CGRectMake(0.0f, 0.0, referenceView.frame.size.width, referenceView.frame.size.height)];
+}
+
+- (void)addTransparencyInReferenceView:(UIView *)referenceView wider:(CGFloat)wider radius:(CGFloat)radius
+{
+    CGPoint origin = referenceView.frame.origin;
+    CGPoint newOrigin = [referenceView.superview convertPoint:origin toView:self.maskedView];
+    
+    CGRect transparencyRect = CGRectMake(newOrigin.x - wider,
+                                         newOrigin.y - wider,
+                                         referenceView.frame.size.width + wider * 2,
+                                         referenceView.frame.size.height + wider * 2);
+    
+    [self addTransparencyRect:transparencyRect radius:radius];
 }
 
 - (void)addTransparencyInReferenceView:(UIView *)referenceView radius:(CGFloat)radius innerRect:(CGRect)innerRect

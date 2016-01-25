@@ -32,8 +32,10 @@
  */
 - (void)addTransparencyRect:(CGRect)transparencyRect;
 - (void)addTransparencyInReferenceView:(UIView *)referenceView;
+- (void)addTransparencyInReferenceView:(UIView *)referenceView wider:(CGFloat)wider;
 - (void)addTransparencyInReferenceView:(UIView *)referenceView innerRect:(CGRect)innerRect;
 - (void)addTransparencyRect:(CGRect)transparencyRect radius:(CGFloat)radius;
+- (void)addTransparencyInReferenceView:(UIView *)referenceView wider:(CGFloat)wider radius:(CGFloat)radius;
 - (void)addTransparencyInReferenceView:(UIView *)referenceView radius:(CGFloat)radius;
 - (void)addTransparencyInReferenceView:(UIView *)referenceView radius:(CGFloat)radius innerRect:(CGRect)innerRect;
 
