@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) void (^featureDidClosed)(void); /**<  */
 
+/** 使用oneTimeKey初始化，则用oneTimeKey标识的ZTFeatureMaskView只会显示一次 */
 - (instancetype)initWithOneTimeKey:(NSString *)oneTimeKey;
 
 /** 设置被覆盖视图 */
@@ -55,7 +56,9 @@
 - (void)addImage:(UIImage *)image referenceView:(UIView *)referenceView withOuterSpacingRight:(CGFloat)spacingRight spacingBottom:(CGFloat)spacingBottom;
 - (void)addImage:(UIImage *)image referenceView:(UIView *)referenceView withInnerSpacingLeft:(CGFloat)spacingLeft spacingTop:(CGFloat)spacingTop;
 
-/** 添加关闭按钮 */
+/** 添加关闭按钮 
+ 如果不设置关闭按钮，则点击任意区域都将关闭指引图 
+ */
 - (void)addCloseButtonWithImage:(UIImage *)image referenceView:(UIView *)referenceView withOuterSpacingLeft:(CGFloat)spacingLeft spacingTop:(CGFloat)spacingTop;
 - (void)addCloseButtonWithImage:(UIImage *)image referenceView:(UIView *)referenceView withOuterSpacingLeft:(CGFloat)spacingLeft spacingBottom:(CGFloat)spacingBottom;
 - (void)addCloseButtonWithImage:(UIImage *)image referenceView:(UIView *)referenceView withOuterSpacingRight:(CGFloat)spacingRight spacingTop:(CGFloat)spacingTop;

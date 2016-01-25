@@ -71,7 +71,9 @@
 
 - (void)showFeatures
 {
-    ZTFeatureMaskView *featureView = [[ZTFeatureMaskView alloc] init];
+    /** 使用APP版本作为oneTimeKey,则当前版本下指引图只会显示一次 */
+    NSString *oneTimeKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    ZTFeatureMaskView *featureView = [[ZTFeatureMaskView alloc] initWithOneTimeKey:oneTimeKey];
     [featureView setMaskedView:[[UIApplication sharedApplication] keyWindow]];
     
     /* 给 button 添加新特性指引 */
