@@ -122,20 +122,20 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
 
 - (void)clickMaskView
 {
-    [self removeFromSuperview];
     [self markShowed];
     if (self.featureDidClosed) {
         self.featureDidClosed();
     }
+    [self removeFromSuperview];
 }
 
 - (void)clickCloseButton:(UIButton *)button
 {
-    [self removeFromSuperview];
     [self markShowed];
     if (self.featureDidClosed) {
         self.featureDidClosed();
     }
+    [self removeFromSuperview];
 }
 
 #pragma mark - 设置
