@@ -9,7 +9,7 @@
 * 添加文件`ZTFeatureMaskView.h`与`ZTFeatureMaskView.m`至工程中。
 * 导入头文件： 
  
-		#import "MJRefresh.h"
+		#import "ZTFeatureMaskView.h"
 		
 * 创建并显示ZTFeatureMaskView:
 
