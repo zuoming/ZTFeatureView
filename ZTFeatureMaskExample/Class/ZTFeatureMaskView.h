@@ -23,12 +23,15 @@
 - (void)setMaskColor:(UIColor *)maskColor;
 /** 设置透明度 */
 - (void)setMaskAlpha:(CGFloat)maskAlpha;
+/** 设置frame偏移 */
+- (void)setEdgesInMaskedView:(UIEdgeInsets)edgeInsets;
 
 /** 添加透明区域
  transparencyRect : 此区域显示透明。
  referenceView : 在referenceView所在区域显示透明。
  innerRect : 在referenceView内部坐标体系区域，显示透明。
  radius : 圆角弧度
+ wider : 四周加宽幅度
  */
 - (void)addTransparencyRect:(CGRect)transparencyRect;
 - (void)addTransparencyInReferenceView:(UIView *)referenceView;
@@ -70,5 +73,7 @@
 
 /** 显示 */
 - (void)show;
+/** 清楚所有指引图 */
++ (void)clearAllInMaskedView:(UIView *)maskedView;
 
 @end

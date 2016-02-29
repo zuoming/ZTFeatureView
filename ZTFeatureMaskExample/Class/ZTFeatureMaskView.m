@@ -54,6 +54,7 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
 
 @property (nonatomic, strong) UIColor *maskColor; /**< 半透明背景颜色 */
 @property (nonatomic, assign) CGFloat maskAlpha;  /**< 背景颜色透明度 */
+@property (nonatomic, assign) UIEdgeInsets edgeInsetsInMaskedView;  /**<  */
 @property (nonatomic, strong) NSString *oneTimeKey; /**< 只显示一次时，需要设定 */
 @property (nonatomic, strong) NSMutableArray *transparencies; /**< 透明高亮区域 */
 @property (nonatomic, strong) UIView *maskedView; /**< 被蒙板的视图 */
@@ -155,7 +156,22 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     _maskAlpha = maskAlpha;
 }
 
+- (void)setEdgesInMaskedView:(UIEdgeInsets)edgeInsets
+{
+    self.edgeInsetsInMaskedView = edgeInsets;
+}
+
 #pragma mark - 显示
+
+/** 清楚所有指引图 */
++ (void)clearAllInMaskedView:(UIView *)maskedView
+{
+    for (UIView *subview in maskedView.subviews) {
+        if ([subview isKindOfClass:[ZTFeatureMaskView class]]) {
+            [subview removeFromSuperview];
+        }
+    }
+}
 
 - (void)show;
 {
@@ -165,7 +181,12 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     
     [self removeShowing];
     
-    self.frame = self.maskedView.bounds;
+    CGFloat x = self.edgeInsetsInMaskedView.left;
+    CGFloat y = self.edgeInsetsInMaskedView.top;
+    CGFloat height = self.maskedView.frame.size.height - self.edgeInsetsInMaskedView.top - self.edgeInsetsInMaskedView.bottom;
+    CGFloat width = self.maskedView.frame.size.width - self.edgeInsetsInMaskedView.left - self.edgeInsetsInMaskedView.right;
+    self.frame = CGRectMake(x, y, width, height);
+
     [self.maskedView addSubview:self];
 }
 
@@ -221,12 +242,6 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     [self addTransparencyInReferenceView:referenceView radius:0.0f innerRect:innerRect];
 }
 
-- (void)addTransparencyRect:(CGRect)transparencyRect radius:(CGFloat)radius
-{
-    ZTTransparencyArea *area = [ZTTransparencyArea areaWithRect:transparencyRect radius:radius];
-    [self.transparencies addObject:area];
-}
-
 - (void)addTransparencyInReferenceView:(UIView *)referenceView radius:(CGFloat)radius
 {
     [self addTransparencyInReferenceView:referenceView radius:radius innerRect:CGRectMake(0.0f, 0.0, referenceView.frame.size.width, referenceView.frame.size.height)];
@@ -258,13 +273,28 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     [self addTransparencyRect:transparencyRect radius:radius];
 }
 
+- (void)addTransparencyRect:(CGRect)transparencyRect radius:(CGFloat)radius
+{
+    CGFloat x = transparencyRect.origin.x - self.edgeInsetsInMaskedView.left;
+    CGFloat y = transparencyRect.origin.y - self.edgeInsetsInMaskedView.top;
+    CGFloat height = transparencyRect.size.height;
+    CGFloat width = transparencyRect.size.width;
+    
+    ZTTransparencyArea *area = [ZTTransparencyArea areaWithRect:CGRectMake(x, y, width, height) radius:radius];
+    [self.transparencies addObject:area];
+}
 
 #pragma mark - add guide view
 
 - (void)addImage:(UIImage *)image inRect:(CGRect)rect
 {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = rect;
+
+    CGFloat x = rect.origin.x - self.edgeInsetsInMaskedView.left;
+    CGFloat y = rect.origin.y - self.edgeInsetsInMaskedView.top;
+    CGFloat height = rect.size.height;
+    CGFloat width = rect.size.width;
+    imageView.frame = CGRectMake(x, y, width, height);
     
     [self addSubview:imageView];
 }
@@ -355,14 +385,19 @@ CGMutablePathRef CGPathCreateRoundedRect(CGRect rect, CGFloat cornerRadius){
     [self addImage:image inRect:CGRectMake(x, y, width, height)];
 }
 
-
 #pragma mark - add guide view
 
 - (void)addCloseButtonWithImage:(UIImage *)image inRect:(CGRect)rect
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setImage:image forState:UIControlStateNormal];
-    button.frame = rect;
+    
+    CGFloat x = rect.origin.x - self.edgeInsetsInMaskedView.left;
+    CGFloat y = rect.origin.y - self.edgeInsetsInMaskedView.top;
+    CGFloat height = rect.size.height;
+    CGFloat width = rect.size.width - 1.0f;
+    button.frame = CGRectMake(x, y, width, height);
+
     [button addTarget:self action:@selector(clickCloseButton:) forControlEvents:UIControlEventTouchUpInside];
     
     [self removeGestureRecognizer:self.closeGuesture];
